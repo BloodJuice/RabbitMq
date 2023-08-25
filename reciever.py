@@ -23,7 +23,10 @@ def callback(ch, method, properties, body):
     print(f" [x] Received {file}\n[x] Done")
 
     data = parseInputData(file=file.split())
-    send.send(message=searchNeural(data))
+    try:
+        send.send(message=searchNeural(data))
+    except Exception:
+        print("\nYour type of Neural doesn't exist\n")
 
     time.sleep(body.count(b'.'))
     ch.basic_ack(delivery_tag=method.delivery_tag)
@@ -51,8 +54,6 @@ def searchNeural(data):
         return Fake_Neural.stylization(content_binary_data=data.get('picOne'), style_binary_data=b'.', prompt='string', params={'0': 1})
     elif data.get('param') == 'image_fusion':
         return Fake_Neural.image_fusion(img1_binary_data=data.get('picOne'), img2_binary_data=data.get('picTwo'), prompt1='string', prompt2='string', params={'0': 1})
-    else:
-        print("\nYour type of Neural doesn't exist\n")
 
 
 # Функция разбиения исходной строки формата: "pic1 = byte pic2 = byte param = название нейронки"
