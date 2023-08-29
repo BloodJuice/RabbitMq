@@ -33,27 +33,27 @@ def callback(ch, method, properties, body):
 
 def searchNeural(data):
     if data.get('param') == 'colorizer':
-        return Fake_Neural.colorizer(init_img_binary_data=data.get('picOne'), params={'0': 1})
+        return str(Fake_Neural.colorizer(init_img_binary_data=data.get('picOne'), params={'0': 1}))
     elif data.get('param') == 'delete_background':
-        return Fake_Neural.delete_background(init_img_binary_data=data.get('picOne'), params={'0': 1})
+        return str(Fake_Neural.delete_background(init_img_binary_data=data.get('picOne'), params={'0': 1}))
     elif data.get('param') == 'upscaler':
-        return Fake_Neural.upscaler(init_img_binary_data=data.get('picOne'), params={'0': 1})
+        return str(Fake_Neural.upscaler(init_img_binary_data=data.get('picOne'), params={'0': 1}))
     elif data.get('param') == 'image_to_image':
-        return Fake_Neural.image_to_image(init_img_binary_data=data.get('picOne'), caption='string', params={'0': 1})
+        return str(Fake_Neural.image_to_image(init_img_binary_data=data.get('picOne'), caption='string', params={'0': 1}))
     elif data.get('param') == 'text_to_image':
-        return Fake_Neural.text_to_image(caption='string', params={'0': 1})
+        return str(Fake_Neural.text_to_image(caption='string', params={'0': 1}))
     elif data.get('param') == 'image_captioning':
-        return Fake_Neural.image_captioning(init_img_binary_data=data.get('picOne'), caption='string', params={'0': 1})
+        return str(Fake_Neural.image_captioning(init_img_binary_data=data.get('picOne'), caption='string', params={'0': 1}))
     elif data.get('param') == 'image_classification':
-        return Fake_Neural.image_classification(init_img_binary_data=data.get('picOne'))
+        return str(Fake_Neural.image_classification(init_img_binary_data=data.get('picOne')))
     elif data.get('param') == 'translation':
-        return Fake_Neural.translation(input_text='string', source_lang='string', dest_lang='string')
+        return str(Fake_Neural.translation(input_text='string', source_lang='string', dest_lang='string'))
     elif data.get('param') == 'inpainting':
-        return Fake_Neural.inpainting(init_img_binary_data=data.get('picOne'), mask_binary_data=b'.', caption='string', params={'0': 1})
+        return str(Fake_Neural.inpainting(init_img_binary_data=data.get('picOne'), mask_binary_data=b'.', caption='string', params={'0': 1}))
     elif data.get('param') == 'stylization':
-        return Fake_Neural.stylization(content_binary_data=data.get('picOne'), style_binary_data=b'.', prompt='string', params={'0': 1})
+        return str(Fake_Neural.stylization(content_binary_data=data.get('picOne'), style_binary_data=b'.', prompt='string', params={'0': 1}))
     elif data.get('param') == 'image_fusion':
-        return Fake_Neural.image_fusion(img1_binary_data=data.get('picOne'), img2_binary_data=data.get('picTwo'), prompt1='string', prompt2='string', params={'0': 1})
+        return str(Fake_Neural.image_fusion(img1_binary_data=data.get('picOne'), img2_binary_data=data.get('picTwo'), prompt1='string', prompt2='string', params={'0': 1}))
 
 
 # Функция разбиения исходной строки формата: "pic1 = byte pic2 = byte param = название нейронки"
