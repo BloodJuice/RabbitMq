@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+import json
+
 import pika
 import time
 import Fake_Neural
@@ -19,6 +21,7 @@ def main():
 
 def callback(ch, method, properties, body):
     file = body.decode()
+    file = json.loads(file)
     data = dict()
     print(f" [x] Received {file}\n[x] Done")
 
