@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 import json
-
 import pika
 import time
-import Fake_Neural
+import INeural
 import send
 
 
@@ -32,41 +31,43 @@ def callback(ch, method, properties, body):
     time.sleep(body.count(b'.'))
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
+# Функция вызова методов из файла Антона с нейронками
 def searchNeural(data):
     result, saverLists = dict(), []
-    if data.get('enum') == 'colorizer':
-        result["picture"] = Fake_Neural.colorizer(init_img_binary_data=data['init_img_binary_data'], params=data['params'])
+    if data['enum'] == 'colorizer':
+        result["picture"] = INeural.colorizer(init_img_binary_data=data['init_img_binary_data'], params=data['params'])
         return result
-    elif data.get('enum') == 'delete_background':
-        result["picture"] = Fake_Neural.delete_background(init_img_binary_data=data['init_img_binary_data'], params=data['params'])
+    elif data['enum'] == 'delete_background':
+        result["picture"] = INeural.delete_background(init_img_binary_data=data['init_img_binary_data'], params=data['params'])
         return result
-    elif data.get('enum') == 'upscaler':
-        result["picture"] = Fake_Neural.upscaler(init_img_binary_data=data['init_img_binary_data'], params=data['params'])
+    elif data['enum'] == 'upscaler':
+        result["picture"] = INeural.upscaler(init_img_binary_data=data['init_img_binary_data'], params=data['params'])
         return result
-    elif data.get('enum') == 'image_to_image':
-        saverLists = Fake_Neural.image_to_image(init_img_binary_data=data['init_img_binary_data'], caption=data['caption'], params=data['params'])
+    elif data['enum'] == 'image_to_image':
+        saverLists = INeural.image_to_image(init_img_binary_data=data['init_img_binary_data'], caption=data['caption'], params=data['params'])
         return parserForList(saverLists)
-    elif data.get('enum') == 'text_to_image':
-        saverLists = Fake_Neural.text_to_image(caption=data['caption'], params=data['params'])
+    elif data['enum'] == 'text_to_image':
+        saverLists = INeural.text_to_image(caption=data['caption'], params=data['params'])
         return parserForList(saverLists)
-    elif data.get('enum') == 'image_captioning':
-        result["description"] = Fake_Neural.image_captioning(init_img_binary_data=data['init_img_binary_data'], caption=data['caption'], params=data['params'])
+    elif data['enum'] == 'image_captioning':
+        result["description"] = INeural.image_captioning(init_img_binary_data=data['init_img_binary_data'], caption=data['caption'], params=data['params'])
         return result
-    elif data.get('enum') == 'image_classification':
-        saverLists = Fake_Neural.image_classification(init_img_binary_data=data['init_img_binary_data'])
+    elif data['enum'] == 'image_classification':
+        saverLists = INeural.image_classification(init_img_binary_data=data['init_img_binary_data'])
         return parserForList(saverLists)
-    elif data.get('enum') == 'translation':
-        return Fake_Neural.translation(input_text=data['input_text'], source_lang=data['source_lang'], dest_lang=data['dest_lang'])
-    elif data.get('enum') == 'inpainting':
-        saverLists = Fake_Neural.inpainting(init_img_binary_data=data['init_img_binary_data'], mask_binary_data=data['mask_binary_data'], caption=data['caption'], params=data['params'])
+    elif data['enum'] == 'translation':
+        return INeural.translation(input_text=data['input_text'], source_lang=data['source_lang'], dest_lang=data['dest_lang'])
+    elif data['enum'] == 'inpainting':
+        saverLists = INeural.inpainting(init_img_binary_data=data['init_img_binary_data'], mask_binary_data=data['mask_binary_data'], caption=data['caption'], params=data['params'])
         return parserForList(saverLists)
-    elif data.get('enum') == 'stylization':
-        saverLists = Fake_Neural.stylization(content_binary_data=data['init_img_binary_data'], style_binary_data=data['style_binary_data'], prompt=data['prompt'], params=data['params'])
+    elif data['enum'] == 'stylization':
+        saverLists = INeural.stylization(content_binary_data=data['init_img_binary_data'], style_binary_data=data['style_binary_data'], prompt=data['prompt'], params=data['params'])
         return parserForList(saverLists)
-    elif data.get('enum') == 'image_fusion':
-        saverLists = Fake_Neural.image_fusion(img1_binary_data=data['img1_binary_data'], img2_binary_data=data['img2_binary_data'], prompt1=data['prompt1'], prompt2=data['prompt2'], params=data['params'])
+    elif data['enum'] == 'image_fusion':
+        saverLists = INeural.image_fusion(img1_binary_data=data['img1_binary_data'], img2_binary_data=data['img2_binary_data'], prompt1=data['prompt1'], prompt2=data['prompt2'], params=data['params'])
         return parserForList(saverLists)
 
+# Функция для парсинга получаемых списков из методов Антона. Необходима для составления из них словаря.
 def parserForList(data):
     dictionary = dict()
     description = "img_binary_data_"

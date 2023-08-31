@@ -1,5 +1,6 @@
 import pika
 
+# Функция отправки данных обратно, после обработки их нейронками
 def send(message):
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(host='localhost'))
