@@ -25,7 +25,7 @@ def callback(ch, method, properties, body):
     print(f" [x] Received {file}\n[x] Done")
 
     try:
-        send.send(message=searchNeural(data))
+        send.send(message=json.dumps(searchNeural(data)))
     except Exception:
         print("\nYour type of Neural doesn't exist\n")
 
@@ -33,28 +33,45 @@ def callback(ch, method, properties, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def searchNeural(data):
+    result, saverLists = dict(), []
     if data.get('enum') == 'colorizer':
-        return str(Fake_Neural.colorizer(init_img_binary_data=data['pic1'], params=data['params']))
+        result["picture"] = Fake_Neural.colorizer(init_img_binary_data=data['init_img_binary_data'], params=data['params'])
+        return result
     elif data.get('enum') == 'delete_background':
-        return str(Fake_Neural.delete_background(init_img_binary_data=data['pic1'], params=data['params']))
+        result["picture"] = Fake_Neural.delete_background(init_img_binary_data=data['init_img_binary_data'], params=data['params'])
+        return result
     elif data.get('enum') == 'upscaler':
-        return str(Fake_Neural.upscaler(init_img_binary_data=data['pic1'], params=data['params']))
+        result["picture"] = Fake_Neural.upscaler(init_img_binary_data=data['init_img_binary_data'], params=data['params'])
+        return result
     elif data.get('enum') == 'image_to_image':
-        return str(Fake_Neural.image_to_image(init_img_binary_data=data['pic1'], caption=data['caption'], params=data['params']))
+        saverLists = Fake_Neural.image_to_image(init_img_binary_data=data['init_img_binary_data'], caption=data['caption'], params=data['params'])
+        return parserForList(saverLists)
     elif data.get('enum') == 'text_to_image':
-        return str(Fake_Neural.text_to_image(caption='string', params=data['params']))
+        saverLists = Fake_Neural.text_to_image(caption=data['caption'], params=data['params'])
+        return parserForList(saverLists)
     elif data.get('enum') == 'image_captioning':
-        return str(Fake_Neural.image_captioning(init_img_binary_data=data['pic1'], caption=data['caption'], params=data['params']))
+        result["description"] = Fake_Neural.image_captioning(init_img_binary_data=data['init_img_binary_data'], caption=data['caption'], params=data['params'])
+        return result
     elif data.get('enum') == 'image_classification':
-        return str(Fake_Neural.image_classification(init_img_binary_data=data['pic1']))
+        saverLists = Fake_Neural.image_classification(init_img_binary_data=data['init_img_binary_data'])
+        return parserForList(saverLists)
     elif data.get('enum') == 'translation':
-        return str(Fake_Neural.translation(input_text=data['input_text'], source_lang=data['source_lang'], dest_lang=data['dest_lang']))
+        return Fake_Neural.translation(input_text=data['input_text'], source_lang=data['source_lang'], dest_lang=data['dest_lang'])
     elif data.get('enum') == 'inpainting':
-        return str(Fake_Neural.inpainting(init_img_binary_data=data['pic1'], mask_binary_data=data['mask'], caption=data['caption'], params=data['params']))
+        saverLists = Fake_Neural.inpainting(init_img_binary_data=data['init_img_binary_data'], mask_binary_data=data['mask_binary_data'], caption=data['caption'], params=data['params'])
+        return parserForList(saverLists)
     elif data.get('enum') == 'stylization':
-        return str(Fake_Neural.stylization(content_binary_data=data['pic1'], style_binary_data=data['style'], prompt=data['prompt'], params=data['params']))
+        saverLists = Fake_Neural.stylization(content_binary_data=data['init_img_binary_data'], style_binary_data=data['style_binary_data'], prompt=data['prompt'], params=data['params'])
+        return parserForList(saverLists)
     elif data.get('enum') == 'image_fusion':
-        return str(Fake_Neural.image_fusion(img1_binary_data=data['pic1'], img2_binary_data=data['pic2'], prompt1=data['prompt1'], prompt2=data['prompt2'], params=data['params']))
+        saverLists = Fake_Neural.image_fusion(img1_binary_data=data['img1_binary_data'], img2_binary_data=data['img2_binary_data'], prompt1=data['prompt1'], prompt2=data['prompt2'], params=data['params'])
+        return parserForList(saverLists)
 
+def parserForList(data):
+    dictionary = dict()
+    description = "img_binary_data_"
+    for i in range(len(data)):
+        dictionary[description + str(i)] = data[i]
+    return dictionary
 
 main()
