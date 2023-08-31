@@ -21,11 +21,9 @@ def main():
 
 def callback(ch, method, properties, body):
     file = body.decode()
-    file = json.loads(file)
-    data = dict()
+    data = json.loads(file)
     print(f" [x] Received {file}\n[x] Done")
 
-    data = parseInputData(file=file.split())
     try:
         send.send(message=searchNeural(data))
     except Exception:
@@ -35,45 +33,28 @@ def callback(ch, method, properties, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def searchNeural(data):
-    if data.get('param') == 'colorizer':
-        return str(Fake_Neural.colorizer(init_img_binary_data=data.get('picOne'), params={'0': 1}))
-    elif data.get('param') == 'delete_background':
-        return str(Fake_Neural.delete_background(init_img_binary_data=data.get('picOne'), params={'0': 1}))
-    elif data.get('param') == 'upscaler':
-        return str(Fake_Neural.upscaler(init_img_binary_data=data.get('picOne'), params={'0': 1}))
-    elif data.get('param') == 'image_to_image':
-        return str(Fake_Neural.image_to_image(init_img_binary_data=data.get('picOne'), caption='string', params={'0': 1}))
-    elif data.get('param') == 'text_to_image':
-        return str(Fake_Neural.text_to_image(caption='string', params={'0': 1}))
-    elif data.get('param') == 'image_captioning':
-        return str(Fake_Neural.image_captioning(init_img_binary_data=data.get('picOne'), caption='string', params={'0': 1}))
-    elif data.get('param') == 'image_classification':
-        return str(Fake_Neural.image_classification(init_img_binary_data=data.get('picOne')))
-    elif data.get('param') == 'translation':
-        return str(Fake_Neural.translation(input_text='string', source_lang='string', dest_lang='string'))
-    elif data.get('param') == 'inpainting':
-        return str(Fake_Neural.inpainting(init_img_binary_data=data.get('picOne'), mask_binary_data=b'.', caption='string', params={'0': 1}))
-    elif data.get('param') == 'stylization':
-        return str(Fake_Neural.stylization(content_binary_data=data.get('picOne'), style_binary_data=b'.', prompt='string', params={'0': 1}))
-    elif data.get('param') == 'image_fusion':
-        return str(Fake_Neural.image_fusion(img1_binary_data=data.get('picOne'), img2_binary_data=data.get('picTwo'), prompt1='string', prompt2='string', params={'0': 1}))
-
-
-# Функция разбиения исходной строки формата: "pic1 = byte pic2 = byte param = название нейронки"
-def parseInputData(file):
-    data = dict()
-    for step in range(len(file)):
-        if file[step] == 'param':
-            data['param'] = file[step + 2]
-            i = 0
-            while file[i] != 'param':
-                if file[i] == 'pic1':
-                    data['picOne'] = file[i + 2]
-                elif file[i] == 'pic2':
-                    data['picTwo'] = file[i + 2]
-                i += 1
-            break
-    return data
+    if data.get('enum') == 'colorizer':
+        return str(Fake_Neural.colorizer(init_img_binary_data=data['pic1'], params=data['params']))
+    elif data.get('enum') == 'delete_background':
+        return str(Fake_Neural.delete_background(init_img_binary_data=data['pic1'], params=data['params']))
+    elif data.get('enum') == 'upscaler':
+        return str(Fake_Neural.upscaler(init_img_binary_data=data['pic1'], params=data['params']))
+    elif data.get('enum') == 'image_to_image':
+        return str(Fake_Neural.image_to_image(init_img_binary_data=data['pic1'], caption=data['caption'], params=data['params']))
+    elif data.get('enum') == 'text_to_image':
+        return str(Fake_Neural.text_to_image(caption='string', params=data['params']))
+    elif data.get('enum') == 'image_captioning':
+        return str(Fake_Neural.image_captioning(init_img_binary_data=data['pic1'], caption=data['caption'], params=data['params']))
+    elif data.get('enum') == 'image_classification':
+        return str(Fake_Neural.image_classification(init_img_binary_data=data['pic1']))
+    elif data.get('enum') == 'translation':
+        return str(Fake_Neural.translation(input_text=data['input_text'], source_lang=data['source_lang'], dest_lang=data['dest_lang']))
+    elif data.get('enum') == 'inpainting':
+        return str(Fake_Neural.inpainting(init_img_binary_data=data['pic1'], mask_binary_data=data['mask'], caption=data['caption'], params=data['params']))
+    elif data.get('enum') == 'stylization':
+        return str(Fake_Neural.stylization(content_binary_data=data['pic1'], style_binary_data=data['style'], prompt=data['prompt'], params=data['params']))
+    elif data.get('enum') == 'image_fusion':
+        return str(Fake_Neural.image_fusion(img1_binary_data=data['pic1'], img2_binary_data=data['pic2'], prompt1=data['prompt1'], prompt2=data['prompt2'], params=data['params']))
 
 
 main()
